@@ -102,7 +102,9 @@ public class BluetoothSPP {
         return connectedResult;
     }
 
-
+    /**
+     * Create InputStream
+     */
     public void buildInputStream(){
         try{
            mmInputStream = mmSocket.getInputStream();
