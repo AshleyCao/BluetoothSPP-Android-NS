@@ -10,10 +10,12 @@ import java.io.OutputStream;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 
 public class BluetoothSPP {
@@ -118,16 +120,21 @@ public class BluetoothSPP {
         return scanResult;
     }
 
-
+    /**
+     * Async function to get read in string
+     *
+     * @return scanner readin data
+     */
     public String loopThread() {
         executor = Executors.newSingleThreadExecutor();
         String result = "";
         CallableResult nt = new CallableResult();
         future = executor.submit(nt);
+
         try {
-            result = (String)future.get();
-        } catch (Exception var5) {
-            var5.printStackTrace();
+            result = (String)future.get(5, TimeUnit.MINUTES);
+        } catch(InterruptedException | TimeoutException |ExecutionException ie){
+            ie.printStackTrace();
             result = "Can not scan this barcode";
             future.cancel(true);
         }
@@ -170,8 +177,6 @@ public class BluetoothSPP {
                 if(mmInputStream == null){
                     return null;
                 }
-
-
                 int size = mmInputStream.read(buffer);
                 if (size > 0) {
                     rest = generateString(buffer, size);
