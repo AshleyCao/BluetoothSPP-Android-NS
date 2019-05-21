@@ -204,7 +204,7 @@ public class BluetoothSPP {
                 new Supplier<String>() {
                     @Override
                        public String get() {
-                        String rest = "000111";
+                        String rest = "fault";
                         try {
                             if(mmInputStream == null){
                                 return null;
